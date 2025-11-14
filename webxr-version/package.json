@@ -1,0 +1,26 @@
+{
+  "name": "outsinc-vr-webxr",
+  "version": "1.0.0",
+  "description": "OUTSINC VR Social Apps - WebXR/Immersive Web Version",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p 8080 -o",
+    "dev": "npx http-server . -p 8080"
+  },
+  "keywords": [
+    "webxr",
+    "vr",
+    "meta-quest",
+    "three.js",
+    "a-frame"
+  ],
+  "author": "OUTSINC",
+  "license": "MIT",
+  "dependencies": {
+    "aframe": "^1.5.0",
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

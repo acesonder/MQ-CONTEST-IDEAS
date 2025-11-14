@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OUTSINC - VR Social Experiences</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="js/error-logger.js"></script>
+    <script src="js/loading-screen.js"></script>
+    <script src="js/main-menu.js"></script>
+    <script src="js/games.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease-out;
+        }
+        #loading-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #loading-text {
+            font-size: 4em;
+            color: white;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            position: relative;
+        }
+        #loading-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #ff6b6b;
+            animation: bounce-around 7s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+        }
+        @keyframes bounce-around {
+            0% { transform: translate(100vw, -100vh) scale(1); }
+            10% { transform: translate(-50vw, 120vh) scale(1.5); }
+            20% { transform: translate(80vw, 30vh) scale(0.8); }
+            30% { transform: translate(-30vw, -50vh) scale(1.2); }
+            40% { transform: translate(60vw, 90vh) scale(0.9); }
+            50% { transform: translate(-80vw, 10vh) scale(1.3); }
+            60% { transform: translate(40vw, -80vh) scale(1.1); }
+            70% { transform: translate(-60vw, 60vh) scale(0.85); }
+            80% { transform: translate(90vw, -30vh) scale(1.15); }
+            90% { transform: translate(-40vw, 40vh) scale(0.95); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+        #error-log {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            max-width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-family: monospace;
+            z-index: 999;
+            display: none;
+        }
+        #error-log.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-overlay">
+        <div id="loading-text">
+            OUTS<span style="position: relative; display: inline-block; width: 20px;">
+                <div id="loading-dot"></div>
+            </span>NC
+        </div>
+        <p style="color: rgba(255,255,255,0.7); margin-top: 20px;">Loading VR Experience...</p>
+    </div>
+
+    <!-- Error Log Display -->
+    <div id="error-log"></div>
+
+    <!-- A-Frame VR Scene -->
+    <a-scene id="vr-scene" loading-screen="enabled: false" vr-mode-ui="enabled: true">
+        <!-- Assets -->
+        <a-assets>
+            <img id="sky-texture" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%231e3c72' width='100' height='100'/%3E%3C/svg%3E">
+        </a-assets>
+
+        <!-- Camera Rig -->
+        <a-entity id="camera-rig">
+            <a-camera id="main-camera" position="0 1.6 0" wasd-controls look-controls>
+                <a-cursor color="#ff6b6b" raycaster="objects: .clickable"></a-cursor>
+            </a-camera>
+        </a-entity>
+
+        <!-- Environment -->
+        <a-sky color="#1e3c72"></a-sky>
+        <a-plane position="0 0 0" rotation="-90 0 0" width="50" height="50" color="#2a5298" shadow></a-plane>
+
+        <!-- Main Menu (initially hidden) -->
+        <a-entity id="main-menu" position="0 1.6 -3" visible="false">
+            <a-plane position="0 2 0" width="6" height="1" color="#1a1a2e">
+                <a-text value="OUTSINC VR EXPERIENCES" align="center" color="#ffffff" 
+                        width="5.5" position="0 0 0.01"></a-text>
+            </a-plane>
+            
+            <!-- Game Menu Buttons - Row 1 -->
+            <a-box class="clickable menu-button" position="-2 1 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="comfort-bubble">
+                <a-text value="1. Comfort\nBubble Dates" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+            
+            <a-box class="clickable menu-button" position="0 1 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="third-place">
+                <a-text value="2. Third-Place\nCafé" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+            
+            <a-box class="clickable menu-button" position="2 1 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="micro-date">
+                <a-text value="3. Micro-Date\nQuests" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+
+            <!-- Game Menu Buttons - Row 2 -->
+            <a-box class="clickable menu-button" position="-2 0.4 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="passthrough">
+                <a-text value="4. Pass-Through\nHome Hangouts" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+            
+            <a-box class="clickable menu-button" position="0 0.4 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="blind-vibe">
+                <a-text value="5. Blind Vibe\nRooms" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+            
+            <a-box class="clickable menu-button" position="2 0.4 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="story-build">
+                <a-text value="6. Story-Build\nDate" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+
+            <!-- Game Menu Buttons - Row 3 -->
+            <a-box class="clickable menu-button" position="-2 -0.2 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="mini-games">
+                <a-text value="7. Compatibility\nMini-Games" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+            
+            <a-box class="clickable menu-button" position="0 -0.2 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="safe-space">
+                <a-text value="8. Safe Space\nModerator" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+            
+            <a-box class="clickable menu-button" position="2 -0.2 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="citywalk">
+                <a-text value="9. CityWalk\nVR Dates" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+
+            <!-- Game Menu Buttons - Row 4 -->
+            <a-box class="clickable menu-button" position="-2 -0.8 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="interest-cluster">
+                <a-text value="10. Interest\nCluster Hangouts" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+            
+            <a-box class="clickable menu-button" position="0 -0.8 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="mood-matching">
+                <a-text value="11. Mood-Matching\nLounge" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+            
+            <a-box class="clickable menu-button" position="2 -0.8 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="silent-sync">
+                <a-text value="12. Silent Sync\nSessions" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+
+            <!-- Game Menu Buttons - Row 5 -->
+            <a-box class="clickable menu-button" position="-2 -1.4 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="speed-vibes">
+                <a-text value="13. Speed Vibes\nCarousel" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+            
+            <a-box class="clickable menu-button" position="0 -1.4 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="values-based">
+                <a-text value="14. Values-Based\nDate Builder" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+            
+            <a-box class="clickable menu-button" position="2 -1.4 0" width="1.5" height="0.4" depth="0.1" 
+                   color="#0f3460" data-game="movie-debrief">
+                <a-text value="15. Group Movie\n+ Debrief" align="center" color="#ffffff" 
+                        width="1.3" position="0 0 0.06" wrap-count="15"></a-text>
+            </a-box>
+
+            <!-- Back to Menu Button (shown in games) -->
+            <a-box id="back-button" class="clickable" position="0 -2 0" width="2" height="0.4" depth="0.1" 
+                   color="#ff6b6b" visible="false">
+                <a-text value="← Back to Menu" align="center" color="#ffffff" 
+                        width="1.8" position="0 0 0.06"></a-text>
+            </a-box>
+        </a-entity>
+
+        <!-- Game Containers (loaded dynamically) -->
+        <a-entity id="game-container"></a-entity>
+
+        <!-- Ambient lighting -->
+        <a-light type="ambient" color="#445" intensity="0.4"></a-light>
+        <a-light type="directional" color="#fff" intensity="0.6" position="-1 2 1"></a-light>
+    </a-scene>
+
+    <script>
+        // Initialize error logger
+        window.addEventListener('load', () => {
+            ErrorLogger.init();
+            LoadingScreen.init();
+            MainMenu.init();
+            Games.init();
+        });
+    </script>
+</body>
+</html>
