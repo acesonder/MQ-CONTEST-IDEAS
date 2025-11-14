@@ -1,0 +1,32 @@
+{
+  "name": "outsinc-vr-react-native",
+  "version": "1.0.0",
+  "description": "OUTSINC VR Social Apps - React Native/Expo for Meta Horizon OS",
+  "main": "expo-router",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "meta-quest",
+    "horizon-os",
+    "vr"
+  ],
+  "author": "OUTSINC",
+  "license": "MIT",
+  "dependencies": {
+    "expo": "~50.0.0",
+    "expo-gl": "~14.0.0",
+    "expo-three": "~7.0.0",
+    "react": "18.2.0",
+    "react-native": "0.73.0",
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0"
+  }
+}
