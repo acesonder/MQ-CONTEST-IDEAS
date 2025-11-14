@@ -85,6 +85,11 @@ const MainMenu = {
         try {
             ErrorLogger.log('INFO', `Launching game: ${gameId}`);
             
+            // Check if Games object is available
+            if (typeof Games === 'undefined' || !Games) {
+                throw new Error('Games system is not initialized yet. Please wait...');
+            }
+            
             this.currentGame = gameId;
             this.hide();
             
@@ -112,7 +117,10 @@ const MainMenu = {
 
             // Unload current game
             if (this.currentGame) {
-                Games.unloadGame(this.currentGame);
+                // Check if Games object is available
+                if (typeof Games !== 'undefined' && Games) {
+                    Games.unloadGame(this.currentGame);
+                }
                 this.currentGame = null;
             }
 

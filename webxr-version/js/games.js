@@ -566,7 +566,7 @@ const Games = {
             // Instructions
             this.createEntity({
                 geometry: 'primitive: plane; width: 5; height: 1.2',
-                material: 'color: '#1a1a2e; opacity: 0.9',
+                material: 'color: #1a1a2e; opacity: 0.9',
                 position: '0 3.5 -3.5',
                 components: {
                     text: {
@@ -829,7 +829,7 @@ const Games = {
             // Timer display
             this.createEntity({
                 geometry: 'primitive: cylinder; radius: 0.5; height: 0.2',
-                material: 'color: '#2ecc71',
+                material: 'color: #2ecc71',
                 position: '0 2.5 -3'
             });
 
